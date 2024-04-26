@@ -1,0 +1,20 @@
+services:
+
+  server:
+    container_name: server
+    image: izaakdale/greet-server:latest
+    environment:
+      - GRPC_ADDRESS=server:50001
+    networks:
+      - backend
+  delivery:
+    container_name: client
+    image: izaakdale/greet-client:latest
+    environment:
+      - GRPC_ADDRESS=server:50001
+    networks:
+      - backend
+    depends_on:
+      - server
+networks:
+  backend:

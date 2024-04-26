@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greet-server
+spec:
+  selector:
+    matchLabels:
+      app: greet-server
+  template:
+    metadata:
+      labels:
+        app: greet-server
+    spec:
+      containers:
+      - name: greet-server
+        image: izaakdale/greet-server
+        env: 
+        - name: GRPC_ADDRESS
+          value: ":50001"
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 50001
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: role
+                operator: In
+                values:
+                - general
+      tolerations:
+      - operator: Exists
+        effect: NoSchedule
